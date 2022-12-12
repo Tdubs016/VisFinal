@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 /**
@@ -34,7 +35,7 @@ public class Board {
     board.setLayout(new GridLayout(8, 8));
     LinkedList<piece> piecelist = new LinkedList<>();
     for (int i = 0; i < 8; i++){
-    piece bpawn = new piece("bpawn", 6, i, true, piecelist);
+        piece bpawn = new piece("bpawn", 6, i, true, piecelist);
     }
     piece bking = new piece("bking", 7, 4, true, piecelist);
     piece bqueen = new piece("bqueen", 7, 3, true, piecelist);
@@ -45,9 +46,9 @@ public class Board {
     piece brook1 = new piece("brook", 7, 0, true, piecelist);
     piece brook2 = new piece("brook", 7, 7, true, piecelist);
     for (int i = 0; i < 8; i++){
-    piece wpawn = new piece("wpawn", 1, i, false, piecelist);
+        piece wpawn = new piece("wpawn", 1, i, false, piecelist);
     }
-     piece wking = new piece("wking", 0, 4, true, piecelist);
+    piece wking = new piece("wking", 0, 4, true, piecelist);
     piece wqueen = new piece("wqueen", 0, 3, true, piecelist);
     piece wbishop1 = new piece("wbishop", 0, 2, true, piecelist);
     piece wbishop2 = new piece("wbishop", 0, 5, true, piecelist);
@@ -74,20 +75,38 @@ public class Board {
                           public void mouseEntered(MouseEvent evt) {
                             
                             JPanel parent = (JPanel)evt.getSource();
-                            parent.setBorder(greenBorder);
-                            parent.revalidate();
+                            Component[] components = parent.getComponents();
                             
+                            for (Component comp: components){
+                                if(comp.getClass().equals(JLabel.class)){
+                                    parent.setBorder(greenBorder);
+                                    parent.revalidate();
+                                }
+                            }
                             
                          }
 
                          public void mouseExited(MouseEvent evt) {
                            JPanel parent = (JPanel)evt.getSource();
-                            parent.setBorder(null);
-                            parent.revalidate();
+                             Component[] components = parent.getComponents();
+                            
+                            for (Component comp: components){
+                                if(comp.getClass().equals(JLabel.class)){
+                                    parent.setBorder(null);
+                                    parent.revalidate();
+                                }
+                            }
                          }
-                         public void mouseClicked(MouseEvent e) {
-                           JPanel parent = (JPanel)e.getSource();
+                         public void mouseClicked(MouseEvent evt) {
+                           JPanel parent = (JPanel)evt.getSource();
                           
+                           for (int row = 0; row < 8; row++){
+                            for (int collum = 0; collum <8; collum++){
+                                spot[row][collum].setBorder(null);
+                            }
+                           }
+                           
+                           
                            int collum = parent.getX()/66;
                            int row = parent.getY()/66;
                             Component[] components = spot[row][collum].getComponents();
@@ -96,20 +115,33 @@ public class Board {
                            
                            
                              for (Component comp: components){
-                                 int tmp = 0;
+                                 
                                  if(comp.getClass().equals(JLabel.class)){
                                      for(piece p: piecelist){
                                          if(p.piecex == row && p.piecey == collum){
-                                             //System.out.println(p.name);
+                                             System.out.println(p.name);
                                             if(p.name == "bpawn"){
-                                            spot[row-1][collum].add(comp);
-                                            
+                                                spot[row-1][collum].setBorder(yellowBorder);
+                                                spot[row-2][collum].setBorder(yellowBorder);    
+                                            }
+                                            if (p.name == "bknight"){
+//                                               try {
+//                                                spot[row-1][collum+2].setBorder(yellowBorder);
+//                                               } catch (Exception e){
+//                                               
+//                                               } finally {
+//                                               
+//                                                spot[row-2][collum+1].setBorder(yellowBorder);
+//                                                spot[row-2][collum-1].setBorder(yellowBorder);
+//                                                spot[row-1][collum-2].setBorder(yellowBorder);
+//                                                       }
                                             }
                                          }
                                      }
                                  }
-                             System.out.println(tmp);    
-                             tmp++;
+                                 
+                            
+                             
                              }
                           
                           }
